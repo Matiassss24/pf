@@ -1,0 +1,175 @@
+body{
+margin: 0;
+font-family: sans-serif;
+background: grey;
+}
+
+#canvas{
+position: absolute;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+margin: auto;
+}
+
+#color{
+width: 19px;
+height: 19px;
+background: #fffdfd;
+}
+
+.disp{
+position: absolute;
+width: 90px;
+height: 100%;
+background: #444;
+color: #fff;
+left: 0;
+right: 0;
+margin: auto;
+user-select: none;
+}
+
+#grosor{
+position: absolute;
+display: block;
+width: 200px;
+height: 20px;
+-webkit-appearance: none;
+background: linear-gradient(90deg, red, yellow, #00ff00, #00ffff, blue, #ff00ff, red);
+border-radius: 19px;
+margin: auto;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+}
+
+#grosor::-webkit-slider-thumb{
+width: 30px;
+height: 30px;
+border-radius: 50%;
+background: white;
+-webkit-appearance: none;
+}
+
+#color-picker{
+position: absolute;
+bottom: 40px;
+margin: auto;
+left: 0;
+right: 0;
+display: none;
+border: 15px solid #5b5b5b;
+}
+
+.ticon{
+color: white;
+}
+
+.bloque{
+display: flex;
+justify-content: center;
+align-items: center;
+height: 39px;
+}
+
+.baset{
+position: absolute;
+width: 100%;
+height: 40px;
+bottom: 0;
+background: #444;
+}
+
+#undo-btn{
+background: transparent;
+border: none;
+outline: none;
+color: white;
+user-select: none;
+position: absolute;
+right: 45px;
+font-size: 24px;
+top: 0;
+bottom: 0;
+margin: auto;
+}
+
+#undo-btn:disabled{
+color: #333333;
+}
+
+#redo-btn{
+background: transparent;
+border: none;
+outline: none;
+color: white;
+user-select: none;
+position: absolute;
+right: 10px;
+font-size: 24px;
+top: 0;
+bottom: 0;
+margin: auto;
+}
+
+#redo-btn:disabled{
+color: #333333;
+}
+
+.tpad{
+background: #444444;
+padding: 18px;
+}
+
+.tpad:hover{
+background: #333333;
+}
+
+.brusht{
+padding: 18px 18.7px;
+}
+
+.toolbase{
+position: absolute;
+font-size: 24px;
+bottom: 40px;
+display: none;
+}
+
+#currenttool{
+height: 100%;
+width: 61px;
+background: #444444;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 24px;
+color: white;
+}
+
+.bartop{
+position: absolute;
+width: 100%;
+height: 40px;
+top: 0;
+background: #444444;
+}
+
+#loader{
+height: 20px;
+padding: 4px;
+background: #444444;
+text-decoration: none;
+position: absolute;
+left: 6px;
+top: 0;
+bottom: 0;
+margin: auto;
+color: white;
+border: 2px solid white;
+border-radius: 5px;
+user-select: none;
+}
