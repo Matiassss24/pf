@@ -1,4 +1,4 @@
-export default class Fill{
+class Fill{
 constructor(canvas, point, color){
 this.context = canvas.getContext("2d");
 
@@ -6,7 +6,9 @@ this.imageData = this.context.getImageData(0, 0, this.context.canvas.width, this
 
 const targetColor = this.getPixel(point);
 
-alert(targetColor);
+const fillColor = this.hexToRgba(color);
+
+console.log(fillColor);
 
 }
 
@@ -25,5 +27,11 @@ this.imageData.data[offset + 1],
 this.imageData.data[offset + 2],
 this.imageData.data[offset + 3]
 ];
+}
+}
+
+hexToRgba(hex){
+var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+console.log(result);
 }
 }
