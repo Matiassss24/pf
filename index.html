@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="css/estilos.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Paint</title>
+</head>
+<body>
+<canvas id="canvas" width="320" height="200"></canvas>
+<div class="baset">
+<div class="disp" onclick="mostrarEOcultar()">
+<div class="bloque">
+<div id="color"></div><div id="hex">#ffffff</div>
+</div>
+</div>
+<div id="currenttool" onclick="mostrarTools()"><i class="fa fa-paint-brush"></i></div>
+</div>
+<div class="bartop">
+<input type="range" id="grosor" oninput="defgrosor(this.value);" min="1" max="50" value="15">
+<a href="#" id="loader" download="">Guardar</a>
+<button onclick="deshacer()" id="undo-btn" disabled><i class="fa fa-undo"></i></button>
+<button onclick="rehacer()" id="redo-btn" disabled><i class="fa fa-repeat"></i></button>
+</div>
+<canvas id="color-picker"></canvas>
+<div class="toolbase">
+<div onclick="herramienta = 'borrador'; defcolor('white')"><i class="fa fa-eraser ticon tpad"></i></div>
+<div onclick="herramienta = 'pincel'; defcolor(codex)"><i class="fa fa-paint-brush ticon tpad brusht"></i></div>
+</div>
+<script src="js/app.js"></script>
+<script src="js/color.js"></script>
+<script src="js/fill.js"></script>
+<script>
+var nube = document.getElementById('loader');
+nube.addEventListener("click", function(){
+var imagen = canvas.toDataURL("image/png");
+this.href = imagen;
+var ahora = new Date();
+var mes = ahora.getMonth()+1;
+var dia = ahora.getDay();
+var hora = ahora.getHours();
+var minutos = ahora.getMinutes();
+var segundos = ahora.getSeconds();
+mes = mes < 10 ? "0" + mes:mes;
+hora = hora < 10 ? "0" + hora:hora;
+minutos = minutos < 10 ? "0" + minutos:minutos;
+segundos = segundos < 10 ? "0" + segundos:segundos;
+var descargat = ahora.getYear() + 1900 + '-' + mes + '-' + dia + ' ' + hora + ' ' + minutos + ' ' + segundos + '.png';
+this.download = descargat;
+}, false);
+</script>
+</body>
+</html>
