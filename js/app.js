@@ -5,161 +5,225 @@ var ctx = canvas.getContext('2d');
 var rect = canvas.getBoundingClientRect();
 var redob = document.getElementById('redo-btn');
 var
-color = "white",
-currentstroke,
+color = "#ffffff",
+guardado,
+herramienta = "bucket",
+grosor = 15,
 currentt = 0,
 currentu = 0,
-mostrar = false,
-mostrart = false,
-dibujando = false,
-herramienta = "paintb",
-strokes = [],
-redo = [],
-grosor = 15;
-
-ctx.fillStyle = "#fff";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-canvas.addEventListener('touchstart', function(e){
-if(herramienta !== "paintb"){
-dibujando = true;
-currentstroke = {
-color: color,
-grosor: grosor,
-points: [],
-}
-
-currentstroke.points.push({
-x: e.touches[0].clientX - rect.left,
-y: e.touches[0].clientY - rect.top,
-});
-strokes.push(currentstroke);
-dibujar();
-redo = [];
-}else{
-var posicion = {
-x: e.touches[0].clientX - rect.left,
-y: e.touches[0].clientY - rect.top,
-};
-new Fill(canvas, posicion, color);
-}
-});
-
-canvas.addEventListener('touchmove', function(e){
-if(dibujando){
-currentstroke.points.push({
-x: e.touches[0].clientX - rect.left,
-y: e.touches[0].clientY - rect.top,
-});
-dibujar();
-redo = [];
-}
-});
-
-canvas.addEventListener('touchend', function(e){
-if(dibujando){
-currentstroke.points.push({
-x: e.touches[0].clientX - rect.left,
-y: e.touches[0].clientY - rect.top,
-});
-dibujar();
-redo = [];
-dibujando = false;
-}
-});
-
-function dibujar(){
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-for(var i = 0; i < strokes.length; i++){
-s = strokes[i];
-ctx.strokeStyle = s.color;
-ctx.lineCap = "round";
-ctx.lineWidth = s.grosor;
-ctx.beginPath();
-ctx.moveTo(s.points[0].x, s.points[0].y);
-for(var j = 0; j < s.points.length; j++){
-var p = s.points[j];
-ctx.lineTo(p.x, p.y);
-}
-ctx.stroke();
-}
-}
+destack = [],
+limitedes = 20,
+restack = [],
+x = 0,
+y = 0
+cx = 0,
+sx = 0,
+sy = 0,
+cy = 0;
 
 function deshacer(){
-redo.push(strokes[strokes.length - 1]);
-strokes.pop();
-dibujar();
+guardado = ctx.getImageData(0, 0, canvas.width, canvas.height);
+restack.push(guardado);
+ctx.putImageData(destack[destack.length - 1], 0, 0);
+destack.pop();
 }
 
 function rehacer(){
-strokes.push(redo[redo.length - 1]);
-redo.pop();
-dibujar();
+guardado = ctx.getImageData(0, 0, canvas.width, canvas.height);
+destack.push(guardado);
+ctx.putImageData(restack[restack.length - 1], 0, 0);
+restack.pop();
 }
-
-function mostrarEOcultar(){
-mostrar = true;
-}
-
-setInterval(function(){
-if(mostrar){
-colorpicker.style.display = "block";
-document.querySelector(".disp").style.background = "#333333";
-}else{
-colorpicker.style.display = "none";
-document.querySelector(".disp").style.background = "#444444";
-}
-
-if(strokes.length === 0){
-undob.disabled = true;
-}else{
-undob.disabled = false;
-}
-if(redo.length === 0){
-redob.disabled = true;
-}else{
-redob.disabled = false;
-}
-rect = canvas.getBoundingClientRect();
-if(herramienta === "pincel"){
-document.getElementById('currenttool').innerHTML = '<i class="fa fa-paint-brush"></i>';
-}else{
-document.getElementById('currenttool').innerHTML = '<i class="fa fa-eraser"></i>';
-}
-if(mostrart){
-document.querySelector('.toolbase').style.display = "block";
-document.querySelector("#currenttool").style.background = "#333333";
-}else{
-document.querySelector('.toolbase').style.display = "none";
-document.querySelector("#currenttool").style.background = "#444444";
-}
-});
 
 function defcolor(c){
-if(herramienta === "borrador"){
-color = "white";
-}else{
 color = c;
-}
 }
 
 function defgrosor(g){
 grosor = g;
 }
 
-window.onclick = function(){
-currentt ++;
-currentu ++;
-if(currentt === 2){
-mostrar = false;
-currentt = 0;
+function linea(e){
+ctx.putImageData(guardado, 0, 0);
+ctx.beginPath();
+ctx.strokeStyle = color;
+ctx.lineWidth = grosor;
+ctx.lineCap = "round";
+ctx.moveTo(cx, cy);
+ctx.lineTo(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
+ctx.stroke();
+ctx.closePath();
 }
-if(currentu === 2){
-mostrart = false;
-currentu = 0;
+
+function dibujar(e){
+ctx.beginPath();
+ctx.lineWidth = grosor;
+ctx.strokeStyle = color;
+ctx.lineCap = "round";
+ctx.moveTo(x, y);
+ctx.lineTo(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
+ctx.stroke();
+ctx.closePath();
 }
-};
+
+function borrar(e){
+ctx.clearRect(e.touches[0].clientX - rect.left - grosor/2, e.touches[0].clientY - rect.top - grosor/2, grosor, grosor);
+}
 
 function mostrarTools(){
-mostrart = true;
+document.querySelector(".toolbase").style.display = "block";
+}
+
+function rectangular(e){
+ctx.putImageData(guardado, 0, 0);
+ctx.beginPath();
+ctx.strokeStyle = color;
+ctx.lineWidth = grosor;
+sx = e.touches[0].clientX - rect.left;
+sy = e.touches[0].clientY - rect.top;
+ctx.rect(cx, cy, sx, sy);
+ctx.stroke();
+ctx.closePath();
+}
+
+function circular(e){
+sx = e.touches[0].clientX - rect.left;
+sy = e.touches[0].clientY - rect.top;
+ctx.putImageData(guardado, 0, 0);
+ctx.beginPath();
+ctx.strokeStyle = color;
+ctx.lineWidth = grosor;
+posicion = {
+x: cx,
+y: cy,
+};
+currentposition = {
+x: sx,
+y: sy,
+};
+var distancia = obtenerDistancia(posicion, currentposition);
+ctx.arc(cx, cy, distancia, 0, 2 * Math.PI, false);
+ctx.stroke();
+ctx.closePath();
+}
+
+function mostrarEOcultar(){
+colorpicker.style.display = "block";
+}
+
+function obtenerDistancia(coord1, coord2){
+var exp1 = Math.pow(coord2.x - coord1.x, 2);
+var exp2 = Math.pow(coord2.y - coord1.y, 2);
+
+var distancia = Math.sqrt(exp1 - exp2);
+
+return distancia;
+}
+
+canvas.addEventListener("touchstart", function(e){
+restack = [];
+guardado = ctx.getImageData(0, 0, canvas.width, canvas.height);
+if(destack.length >= limitedes){
+destack.shift();
+}
+destack.push(guardado);
+dibujando = true;
+x = e.touches[0].clientX - rect.left;
+y = e.touches[0].clientY - rect.top;
+if(herramienta === "pincel"){
+dibujar(e);
+}else if(herramienta === "borrador"){
+borrar(e);
+}else if(herramienta === "linea"){
+cx = e.touches[0].clientX - rect.left;
+cy = e.touches[0].clientY - rect.top;
+linea(e);
+}else if(herramienta === "rectangulo"){
+cx = e.touches[0].clientX - rect.left;
+cy = e.touches[0].clientY - rect.top;
+}else if(herramienta === "circulo"){
+cx = e.touches[0].clientX - rect.left;
+cy = e.touches[0].clientY - rect.top;
+}else if(herramienta === "bucket"){
+cx = e.touches[0].clientX - rect.left;
+cy = e.touches[0].clientY - rect.top;
+var emposicion = {
+x: Math.round(cx),
+y: Math.round(cy),
+}
+new Fill(canvas, emposicion, color);
+}
+});
+
+canvas.addEventListener("touchmove", function(e){
+if(dibujando){
+restack = [];
+if(herramienta === "pincel"){
+dibujar(e);
+}else if(herramienta === "borrador"){
+borrar(e);
+}else if(herramienta === "linea"){
+linea(e);
+}else if(herramienta === "rectangulo"){
+rectangular(e);
+}else if(herramienta === "circulo"){
+circular(e);
+}
+x = e.touches[0].clientX - rect.left;
+y = e.touches[0].clientY - rect.top;
+}
+});
+
+canvas.addEventListener("touchend", function(e){
+guardado = ctx.getImageData(0, 0, canvas.width, canvas.height);
+if(dibujando){
+restack = [];
+if(herramienta === "pincel"){
+dibujar(e);
+}else if(herramienta === "borrador"){
+borrar(e);
+}else if(herramienta === "linea"){
+linea(e);
+cx = 0;
+cy = 0;
+}else if(herramienta === "rectangulo"){
+rectangular(e);
+cx = 0;
+cy = 0;
+}else if(herramienta === "circulo"){
+circular(e);
+cx = 0;
+cy = 0;
+}
+dibujando = false;
+x = 0;
+y = 0;
+}
+});
+
+setInterval(function(){
+rect = canvas.getBoundingClientRect();
+if(destack.length > 0){
+undob.disabled = false;
+}else{
+undob.disabled = true;
+}
+if(restack.length > 0){
+redob.disabled = false;
+}else{
+redob.disabled = true;
+}
+});
+
+window.onclick = function(){
+currentt++;
+currentu++;
+if(currentt === 2){
+currentt = 0;
+colorpicker.style.display = "none";
+}
+if(currentu === 2){
+currentu = 0;
+document.querySelector(".toolbase").style.display = "none";
+}
 }
