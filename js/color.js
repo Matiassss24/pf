@@ -1,4 +1,3 @@
-var codex;
 class Picker {
 constructor(target, width, height){
 this.target = target;
@@ -108,5 +107,4 @@ return hexa.length == 1 ? "0" + hexa : hexa;
 var code = "#" + oHexa(color.r) + oHexa(color.g) + oHexa(color.b);
 document.getElementById('hex').innerHTML = code;
 defcolor(code);
-codex = code;
 });
