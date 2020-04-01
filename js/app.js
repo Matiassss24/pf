@@ -21,6 +21,8 @@ sx = 0,
 sy = 0,
 cy = 0;
 
+ctx.fillText("buena", 50, 300);
+
 function deshacer(){
 guardado = ctx.getImageData(0, 0, canvas.width, canvas.height);
 restack.push(guardado);
